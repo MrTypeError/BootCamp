@@ -1,54 +1,48 @@
-const dyanamicContent = document.getElementById("dyanamic-text");
-console.log(dyanamicContent)
 
-const phrases = ["Software Engineer..." , "Developer..." , ""]
-let phraseIndex = 0;
-let letterIndex  = 0;
-const typingSpeed = 1
 
-function printLatter(phrase) {
-    if (letterIndex ==phrase.length){
-        // clear letter which have been typed.
-        clearLetter();
-    }
-    else if(letterIndex < phrase.length){
-        dyanamicContent.textContent = phrase.charAt(letterIndex);
-        letterIndex += 1;
-        // setTimeout(// function reference , delay milisecond) 
-        setTimeout(function(){
-            printLatter(phrase)
-    
-        } , 300)
-    }
-}
-function clearLetter() {
-    if(letterIndex = -1){
-        phraseIndex = (phraseIndex+1)% phrases.length;
-        letterIndex = 0;
-        printLatter(phrases[phraseIndex])
-    }
-    if(letterIndex > -1){
-        let updatedPhrase  = "";
-        for(let index=  0; index< letterIndex; index++)
-        updatedPhrase+= phrases[phraseIndex].charAt(index);
-    }
-    console.log(updatedPhrase);
-    dyanamicContent.textContent = updatedPhrase;
-    letterIndex-=1;
-    setTimeout(clearLetter, 100)
-    
-}
+document.addEventListener("DOMContentLoaded", function () {
 
-printLatter(phrases[phraseIndex])
+    const dynamicContent = document.getElementById("dynamic-text");
 
-window.addEventListener("scroll", function(){
-    console.log(this.window.scrollY);
-    let intro = this.document.querySelector(".intro");
-    if(this.window.scrollY >= intro.offsetHeight + intro.offsetTop){
-        this.document.querySelector(".header").getElementsByClassName.position = "sticky";
-    }
-    else{
-        this.document.querySelector(".header").getElementsByClassName.position = "revert";     
+    const phrases = ["Software Engineer...", "Mentor...", "Human Being...", "teacher at Devsnest"]
+    let pharseIndex = 0;
+    let letterIndex = 0;
+    const typingSpeed = 150;
+    const erasingSpeed = 75
+
+    function printLetters(phrase) {
+
+        if (letterIndex == phrase.length) {
+            // clear letter which have been typed
+            clearLetters();
+        }
+        else if (letterIndex < phrase.length) {
+            dynamicContent.textContent += phrase.charAt(letterIndex);
+            letterIndex += 1;
+            setTimeout(function () {
+                printLetters(phrase)
+            }, typingSpeed)
+        }
     }
 
+    function clearLetters() {
+        if (letterIndex == -1) {
+            pharseIndex = (pharseIndex + 1) % phrases.length;
+            letterIndex = 0;
+            printLetters(phrases[pharseIndex])
+        }
+        else if (letterIndex > -1) {
+            let updatedPhrase = "";
+            for (let index = 0; index < letterIndex; index++) {
+                updatedPhrase += phrases[pharseIndex].charAt(index);
+
+            }
+            console.log(updatedPhrase);
+            dynamicContent.textContent = updatedPhrase;
+            letterIndex -= 1;
+            setTimeout(clearLetters, erasingSpeed)
+        }
+    }
+
+    printLetters(phrases[pharseIndex])
 })
