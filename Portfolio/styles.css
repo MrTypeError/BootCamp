@@ -15,7 +15,8 @@
   --font-size-regular: 1rem;
   --font-size-large: 1.5rem;
   --font-size-xl: 2rem;
-  --font-style-heading:
+  /* --font-style-heading: */
+  --font-style-texts: Arial, Helvetica, sans-serif;
 
   --spacing-regular: 16px;
   --spacing-small: calc(var(--spacing-regular) / 2);
@@ -23,10 +24,12 @@
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
   font-size: var(--font-size-large);
+}
+#myname{
+  font-family: 'Combo', cursive;
 }
 
 .header {
@@ -115,8 +118,11 @@ td {
   padding: 8px;
 }
 
-.dynamic-text-color {
-  color: royalblue;
+.dynamic-text-color
+ {
+  font-family:  cursive;
+  color: aqua;
+
 }
 
 form#contact {
