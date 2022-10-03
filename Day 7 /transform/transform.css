@@ -1,0 +1,45 @@
+body{
+    padding: 16px;
+}
+#box{
+    background-color: aqua;
+    width: 200px;
+    height: 200px;
+    margin: 32px auto;
+    border-radius: 30%;
+    /* transition-property: transform;
+    transition-duration: 5s;
+    transition-delay: 1000ms;
+    transition-timing-function: ease-in-out; */
+    animation: rotation 1s infinite;
+}
+/* @keyframes rotation {
+    form{
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(360deg);
+    }
+} */
+@keyframes rotation {
+    0%{
+        transform: rotate(0deg);
+    }
+    25%{
+        transform: rotate(45deg);
+    }
+    50%{
+        transform: rotate(90deg);
+    }
+    75%{
+        transform: rotate(180deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+/* 
+#box:hover{
+    transform: scaleX(2);
+    transition: transform 0.5s 1000ms ease-in-out; 
+}*/

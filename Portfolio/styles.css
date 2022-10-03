@@ -15,6 +15,7 @@
   --font-size-regular: 1rem;
   --font-size-large: 1.5rem;
   --font-size-xl: 2rem;
+  --font-style-heading:
 
   --spacing-regular: 16px;
   --spacing-small: calc(var(--spacing-regular) / 2);
@@ -29,6 +30,7 @@ body {
 }
 
 .header {
+  font-family: 'Combo', cursive;
   padding: 16px;
   position: static;
   top: 0;
@@ -95,6 +97,10 @@ section {
 .social-links a {
   text-decoration: none;
   margin: auto 16px;
+}
+#about-me{
+  font-family: 'Combo', cursive;
+  text-align: center;
 }
 
 table,
@@ -240,5 +246,18 @@ section.menu {
     --intro-color: hsl(0, 0%, 18%);
   }
 }
-
-
+footer {
+  background-color: #333;
+  overflow: hidden;
+}
+footer a {
+  text-decoration: none;
+  padding: 20px;
+  text-align: center;
+  float: left;
+  color: white;
+}  
+footer a:hover{
+  font-family: 'Redressed', cursive;
+  color: rgb(138, 83, 190);
+}

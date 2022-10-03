@@ -1,0 +1,55 @@
+:root{
+    --text-color:hsl( 0 0% 0%);
+    --background-color:lightgray;
+}
+
+/* types: print , screen , alt */
+@media print{
+    body{
+        background: coral;
+    }
+    body{
+        color: aqua;
+    }
+}
+
+body{
+    color: blueviolet;
+    font-size: 1.5rem;
+}
+@media screen and (orientation:portrait) {
+    body::after{
+        content: "Portrait";
+        font-size: xx-large;
+    }
+    
+}
+@media screen and (orientation:landscape) {
+    body::after{
+        content: "Landscape";
+        font-size: xx-large;
+        font-size: 3rem;
+    }
+    
+}
+
+@media (max-width:500px)and (orientation:landscape){
+    body{
+        background-color:aqua;
+    }
+}
+
+@media (min-width:800px) {
+    body{
+        background-color: cornflowerblue;
+    }
+
+}
+
+/* changes the theme adpetive using this quary */
+@media (prefers-color-scheme:dark){
+    body{
+        --text-color:hsl( 0 0% 100%);
+        --background-color:lightgray;
+    }
+}
