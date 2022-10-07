@@ -11,11 +11,11 @@ const getCitiesUsingGeolocation = async (searchText) =>{
 }
 
 
-const getCurrentWeatherData = async(lat , lon , name) => {
-    console.log(name)
-    const url = lat&& lon?`https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${Api_key}&units=metric`:`api.openweathermap.org/data/2.5/weather?q=${name}&appid=${Api_key}`;
+const getCurrentWeatherData = async ({ lat, lon, name: city }) => {
+    const url = lat && lon ? `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${Api_key}&units=metric` : `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`
     const response = await fetch(url);
-    return response.json()
+    return response.json();
+
 }
 
 const getHourlyforecast = async({name:city}) =>{
@@ -34,11 +34,11 @@ const createIconUrl = (icon) =>`http://openweathermap.org/img/wn/${icon}@2x.png`
 
 
 const loadCurrentForecast = ({ name, main: { temp , temp_max , temp_min } , weather:[{ description }]  }) => {
-    const currentForcasElement = document.querySelector("#current-forecast");
-    currentForcasElement.querySelector(".city").textContent = name;
-    currentForcasElement.querySelector(".temp").textContent = formatTemp(temp);
-    currentForcasElement.querySelector(".description").textContent = description;
-    currentForcasElement.querySelector(".min-max-temp").textContent = `H: ${formatTemp(temp_max)} L:${formatTemp(temp_min)}`;
+    const currentForecasElement = document.querySelector("#current-forecast");
+    currentForecasElement.querySelector(".city").textContent = name;
+    currentForecasElement.querySelector(".temp").textContent = formatTemp(temp);
+    currentForecasElement.querySelector(".description").textContent = description;
+    currentForecasElement.querySelector(".min-max-temp").textContent = `H: ${formatTemp(temp_max)} L:${formatTemp(temp_min)}`;
 }
 const loadHourlyForecast = ({main:{temp: tempNow},weather:[{icon:iconNow}]},hourlyForecast)=>{
     const timeFormatter = Intl.DateTimeFormat("en",{
@@ -66,7 +66,6 @@ const calculateDayWiseForecast = (hourlyForecast) =>{
     for(let forecast of hourlyForecast){
         const [date] = forecast.dt_txt.split(" ");
         const daysOfTheWeek = DAYS_OF_THE_WEEK[new Date(date).getDay()]
-        console.log(daysOfTheWeek);
         if(dayWiseForecast.has(daysOfTheWeek)){
             let forecastForTheDay = dayWiseForecast.get(daysOfTheWeek);
             forecastForTheDay.push(forecast)
@@ -74,37 +73,31 @@ const calculateDayWiseForecast = (hourlyForecast) =>{
         }else{
             dayWiseForecast.set(daysOfTheWeek, [forecast]);
         }
-        console.log(dayWiseForecast);
         for(let [key, value] of dayWiseForecast){
             let temp_min = Math.min(...Array.from(value , val=>val.temp_min));
             let temp_max = Math.max(...Array.from(value , val=>val.temp_max));
 
             dayWiseForecast.set(key,{temp_min , temp_max , icon: value.find(v => v.icon).icon});
         }
-        // console.log(dayWiseForecast);
         return dayWiseForecast;
     }
 }
 const loadFiveDayForecast = (hourlyForecast) =>{
-    // console.log(hourlyForecast);
     const dayWiseForecast = calculateDayWiseForecast(hourlyForecast);
     const container = document.querySelector(".five-day-forecast-container");
     let dayWiseInfo = "";
     Array.from(dayWiseForecast).map(([day, {temp_max , temp_min , icon}] , index)=>{
         if (index < 5){
             dayWiseInfo +=`<article class="day-wise-forecast">
-                <h3 class="day">${index === 0? "Today":day}</h3>
+                <h3 class="day">${index === 0? "today":day}</h3>
                 <img class="icon" src="${createIconUrl(icon)}" alt="icon for the forecast"/>
                 <p class="min-temp">${formatTemp(temp_min)}</p>
                 <p class="max-temp">${formatTemp(temp_max)}</p>
-            </article>`
+            </article>`;
         }
-    })
+    });
     container.innerHTML = dayWiseInfo;
 }
-
-
-
 
 const loadFeelsLike = ({main:{feels_like}})=>{
     let container = document.querySelector("#feels-like");
@@ -121,7 +114,7 @@ const loadForecastUsingGeoLocation = ()=>{
     navigator.geolocation.getCurrentPosition(({coords})=>{
         const {latitude:lat , longitude:lon} = coords;
         selectedCity = {lat,lon}
-        // loadData();
+        loadData();
     },error=>console.log(error))
 }
 
@@ -161,7 +154,6 @@ const onSearchChange = async (event) =>{
             options +=`<option data-city-details='${JSON.stringify({lat , lon , name})}' value="${name}" , ${state} , ${country}></option>`
         }
         document.querySelector("#cities").innerHTML = options;
-        console.log(listOfCities);
     }
 }
 
