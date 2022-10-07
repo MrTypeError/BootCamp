@@ -1,0 +1,40 @@
+.container{
+    border:2px solid;
+    display: grid;
+    grid-template-columns: repeat(3 , 200px);
+    grid-template-rows: 200px;
+    height: 100vh;
+    gap: 16px;
+    /* this is vertical alignment */
+    align-content: center;
+    /* this is horizental alignment */
+    justify-content: center;
+
+    /* shorthand property  */
+    /* place-content:  align-content: center; justify-content: center; ; repspectively */
+    place-content: center center;
+
+    /* aligns the context in the the div to center vertically */
+    align-items: center;
+
+     /* aligns the context in the the div to center horizentally */
+    justify-items:center ;
+
+    /* shorthand for this is */
+    place-items: center;
+
+
+    /* this will tell form where to -> to where the text will be loaded */
+    writing-mode: vertical-rl;
+    /* writing-mode: vertical-lr;
+    writing-mode: horizontal-tb; */
+
+    /* if we want to specify the oriantation in which the item should be placed */
+    /* default is rows  */
+    grid-auto-flow: column;
+}
+
+.container > div{
+    background-color: lightcoral;
+
+}
