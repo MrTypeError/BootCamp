@@ -1,0 +1,21 @@
+.container{
+    display: grid;
+
+    /* if we know how many columns are there */
+    /* grid-template-columns: repeat(3 , minmax(200px ,1fr)); */
+
+    /* if we dont know how many rows are there  */
+    grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
+
+    /* it will not keep any extra space , which was left in auto-fill property */
+    grid-template-columns: repeat(auto-fit,minmax(200px, 1fr));
+
+    /* tells the height of the  box */
+    grid-template-rows: 200px auto;
+    gap: 16px;
+
+}
+
+.container{
+    background-color: lightcoral;
+}
