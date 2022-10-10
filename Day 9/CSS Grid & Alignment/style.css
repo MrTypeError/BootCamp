@@ -20,9 +20,11 @@
   }
   
   .first {
+    /* specifies how many coloumn will be there  */
     grid-column: span 2;
   }
   
   .second {
+    /* specifies how many rows will be there  */
     grid-row: span 2;
   }
