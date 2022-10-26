@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN, EXPIRES_IN, TOKEN_TYPE } from "../comman";
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+// const CLIENT_ID = "53c05e5383dd406a99a4ccddd5dff1cc";
 const scopes = "user-top-read user-follow-read playlist-read-private user-library-read";
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 const APP_URL = import.meta.env.VITE_APP_URL;
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded" , ()=>{
 window.setItemsInLocalStorage = ({accessToken, tokenType, expiresIn})=> {
     localStorage.setItem(ACCESS_TOKEN, accessToken);
     localStorage.setItem(TOKEN_TYPE, tokenType);
-    localStorage.setItem(EXPIRES_IN, expiresIn);
+    localStorage.setItem(EXPIRES_IN,(Date.now()+(expiresIn*1000)), expiresIn);
     window.location.href = APP_URL;
 }
 
