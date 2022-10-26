@@ -23,7 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-env*
-*.env.development
-*package-lock.json
+
+node_modules
+package-lock.json   
 package.json
+javascript.svg
