@@ -1,0 +1,28 @@
+article p {
+  color: green;
+}
+article p span {
+  color: red;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: xx-large;
+}
+
+.success, .primary, .deafult {
+  padding: 10px;
+  border-radius: 20px;
+  color: whitesmoke;
+}
+
+.deafult {
+  background-color: black;
+}
+
+.primary {
+  background-color: red;
+}
+
+.success {
+  background-color: green;
+}
+
+/*# sourceMappingURL=styles.css.map */
