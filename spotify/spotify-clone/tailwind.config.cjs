@@ -1,4 +1,3 @@
-import { resolvePackageData } from 'vite';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -7,7 +6,9 @@ module.exports = {
     extend: {
       colors: {
         "green": "#1db954",
-        "black": "#191414",
+        "black-base":"#121212",
+        "black-primary": "#191414",       
+        "black-secondary":"#171818",
         "light-black":"#282828",
         "primary": "#FFFFFF",
         "secondary":"#b3b3b3",
@@ -18,5 +19,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp'),],
 }
