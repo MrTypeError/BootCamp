@@ -15,9 +15,7 @@ const loadUserProfile = async () => {
   const profileButton = document.querySelector("#user-profile-btn");
   const displayNameElement = document.querySelector("#display-name");
 
-  const { display_name: displayName, images } = await fetchRequest(
-    ENDPOINT.userInfo
-  );
+  const { display_name: displayName, images } = await fetchRequest(ENDPOINT.userInfo);
   if (images?.length) {
     defaultImage.classList.add("hidden");
   } else {
@@ -46,9 +44,7 @@ const loadPlaylist = async (endpoint, elementId) => {
       "bg-black-secondary rounded p-4 hover:cursor-pointer hover:bg-light-black";
     playlistItem.id = id;
     playlistItem.setAttribute("data-types", "playlist");
-    playlistItem.addEventListener("click", (event) =>
-      onPlaylistItemClicked(event, id)
-    );
+    playlistItem.addEventListener("click", (event) => onPlaylistItemClicked(event, id));
     const { url: imageUrl } = images;
     playlistItem.innerHTML = `<img src="${imageUrl}" alt=${name}" class="rounded mb-2 object-contain">
             <h2 class="text-base font-semibold mb-4 truncate ">${name}</h2>
@@ -82,8 +78,7 @@ const fillContentForDashboard = () => {
 const formatTime = (duration) => {
   const min = Math.floor(duration / 60_000);
   const sec = ((duration % 6_000) / 1000).toFixed(0);
-  const formattedTime =
-    sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
+  const formattedTime = sec == 60 ? min + 1 + ":00" : min + ":" + (sec < 10 ? "0" : "") + sec;
   return formattedTime;
 };
 
@@ -201,12 +196,8 @@ const loadSection = (section) => {
     fillContentForPlaylist(section.playlist);
   }
 
-  document
-    .querySelector(".content")
-    .removeEventListener("scroll", onContentScroll);
-  document
-    .querySelector(".content")
-    .addEventListener("scroll", onContentScroll);
+  document.querySelector(".content").removeEventListener("scroll", onContentScroll);
+  document.querySelector(".content").addEventListener("scroll", onContentScroll);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
