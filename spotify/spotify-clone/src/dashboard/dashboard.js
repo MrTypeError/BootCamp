@@ -1,6 +1,17 @@
 import { fetchRequest } from "../api";
 import { ENDPOINT, logout, SECTION, SECTIONTYPE } from "../comman";
 
+const controller = new AbortController();
+const signal = controller.signal;
+const audio = new Audio();
+const volume = document.querySelector("#volume");
+const playButton = document.querySelector("#play");
+const totalSongDuration = document.querySelector("#total-song-duration");
+const SongDurationCompleted = document.querySelector("#song-duration-completed");
+const songProgress = document.querySelector("#progress");
+const timeline = document.querySelector("#timeline");
+let progressInterval;
+
 const onProfileClick = (event) => {
   event.stopPropagation();
   const profileMenu = document.querySelector("profile-menu");
@@ -19,9 +30,9 @@ const loadUserProfile = async () => {
   if (images?.length) {
     defaultImage.classList.add("hidden");
   } else {
-    defaultImage.classList.remove("remove");
   }
   profileButton.addEventListener("click", onProfileClick);
+  defaultImage.classList.remove("remove");
   displayNameElement.textContent = displayName;
 };
 
@@ -40,8 +51,7 @@ const loadPlaylist = async (endpoint, elementId) => {
 
   for (let { name, description, images, id } of items) {
     const playlistItem = document.createElement("section");
-    playlistItem.className =
-      "bg-black-secondary rounded p-4 hover:cursor-pointer hover:bg-light-black";
+    playlistItem.className = "bg-black-secondary rounded p-4 hover:cursor-pointer hover:bg-light-black";
     playlistItem.id = id;
     playlistItem.setAttribute("data-types", "playlist");
     playlistItem.addEventListener("click", (event) => onPlaylistItemClicked(event, id));
@@ -92,22 +102,91 @@ const onTrackSelection = (id, event) => {
   });
 };
 
+const updateIconsForPlayMode = (id) => {
+  playButton.querySelector("span").textContent = "pause_circle";
+  const playButtonFromTracks = document.querySelector(`#play-track${id}`);
+  playButtonFromTracks.textContent = "||";
+  playButtonFromTracks.setAttribute("data-play", "true");
+};
+
+const onAudioMetadataloaded = (id) => {
+  totalSongDuration.textContent = `0:${audio.duration.toFixed(0)}`;
+  updateIconsForPlayMode(id);
+  // play - track${id}
+};
+
+const updateIconsForPauseMode = (id) => {
+  playButton.querySelector("span").textContent = "play_circle";
+  const playButtonFromTracks = document.querySelector(`#play-track${id}`);
+  playButtonFromTracks.textContent = "▶︎";
+  // playButtonFromTracks.removeAttribute("data-play");
+};
+
+const onNowPlayingPlayButtonClicked = (id) => {
+  if (audio.paused) {
+    audio.play();
+    updateIconsForPlayMode(id);
+  } else {
+    audio.pause();
+    updateIconsForPauseMode(id);
+  }
+};
+
 const onPlayTrack = (event, { image, artistNames, name, previewUrl, id }) => {
-  console.log(image, artistNames, name, previewUrl, id);
+  const buttonWithDataPlay = document.querySelector(`[data-play="true"]`);
+
+  if (buttonWithDataPlay?.id === `play-track${id}`) {
+    if (audio.pause()) {
+      audio.play();
+      updateIconsForPlayMode(id);
+    } else {
+      audio.pause();
+      updateIconsForPauseMode(id);
+    }
+  } else {
+    document.querySelectorAll("[data-play]").forEach((btn) => {
+      btn.setAttribute("data-play", "false");
+      console.log(btn);
+    });
+    // buttonWithDataPlay?.setAttribute("data-play", "false");
+    console.log(image, artistNames, name, previewUrl, id);
+    // <img id="now-playing-image" class="h-12 w-12" src="" srcset="" />
+    //           <section class="flex flex-col justify-center">
+    //             <h2 id="now-playing-song" class="text-sm font-semibold text-primary">song title</h2>
+    //             <p id="now-playing-artists" class="text-xs">song artists</p>
+    //           </section>
+    const nowPlayingSongImage = document.querySelector("#now-playing-image");
+    nowPlayingSongImage.src = image.url;
+    const artists = document.querySelector("#now-playing-song");
+    const songTitle = document.querySelector("#now-playing-artists");
+
+    songTitle.textContent = name;
+    artists.textContent = artistNames;
+
+    audio.src = previewUrl;
+    controller.abort();
+    audio.addEventListener("loadedmetadata", () => onAudioMetadataloaded(id), { signal: controller.signal });
+    playButton.addEventListener("click", () => onNowPlayingPlayButtonClicked(id));
+    audio.play();
+    clearInterval(progressInterval);
+    // timeline.addEventListener("click", )
+    progressInterval = setInterval(() => {
+      if (audio.paused) {
+        return;
+      }
+      SongDurationCompleted.textContent = `${
+        audio.currentTime.toFixed(0) < 10 ? "0:0" + audio.currentTime.toFixed(0) : "0:" + audio.currentTime.toFixed(0)
+      }`;
+      songProgress.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+    }, 100);
+  }
 };
 
 const loadPlaylistTracks = ({ tracks }) => {
   const trackSections = document.querySelector("#tracks");
   let trackNo = 1;
   for (let trackItem of tracks.items) {
-    let {
-      id,
-      artists,
-      name,
-      album,
-      duration_ms: duration,
-      preview_url: previewUrl,
-    } = trackItem.track;
+    let { id, artists, name, album, duration_ms: duration, preview_url: previewUrl } = trackItem.track;
     let track = document.createElement("section");
     track.id = id;
     track.className =
@@ -131,9 +210,7 @@ const loadPlaylistTracks = ({ tracks }) => {
     playButton.id = `play-track${id}`;
     playButton.className = `play w-full absolute left-0 text-lg invisible `;
     playButton.textContent = "▶︎";
-    playButton.addEventListener("click", (event) =>
-      onPlayTrack(event, { image, artistNames, name, previewUrl, id })
-    );
+    playButton.addEventListener("click", (event) => onPlayTrack(event, { image, artistNames, name, previewUrl, id }));
     track.querySelector("p").appendChild(playButton);
     trackSections.appendChild(track);
   }
@@ -217,6 +294,20 @@ document.addEventListener("DOMContentLoaded", () => {
       profileMenu.classList.add("hidden");
     }
   });
+
+  volume.addEventListener("change", () => {
+    audio.volume = volume.value / 100;
+  });
+  timeline.addEventListener(
+    "click",
+    (e) => {
+      const timelineWidth = window.getComputedStyle(timeline).width;
+      const timeToSeek = (e.offsetX / parseInt(timelineWidth)) * audio.duration;
+      audio.currentTime = timeToSeek;
+      songProgress.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+    },
+    false
+  );
 
   window.addEventListener("popstate", (event) => {
     loadSection(event.state);
