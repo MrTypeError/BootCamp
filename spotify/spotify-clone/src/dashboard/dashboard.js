@@ -10,6 +10,7 @@ import {
 } from "../comman";
 
 const audio = new Audio();
+let displayName;
 
 const onProfileClick = (event) => {
   event.stopPropagation();
@@ -20,19 +21,24 @@ const onProfileClick = (event) => {
   }
 };
 
-const loadUserProfile = async () => {
-  const defaultImage = document.querySelector("#default-image");
-  const profileButton = document.querySelector("#user-profile-btn");
-  const displayNameElement = document.querySelector("#display-name");
+const loadUserProfile = () => {
+  return new Promise(async (resolve, reject) => {
+    const defaultImage = document.querySelector("#default-image");
+    const profileButton = document.querySelector("#user-profile-btn");
+    const displayNameElement = document.querySelector("#display-name");
 
-  const { display_name: displayName, images } = await fetchRequest(ENDPOINT.userInfo);
-  if (images?.length) {
-    defaultImage.classList.add("hidden");
-  } else {
-  }
-  profileButton.addEventListener("click", onProfileClick);
-  defaultImage.classList.remove("remove");
-  displayNameElement.textContent = displayName;
+    const { display_name: displayName, images } = await fetchRequest(ENDPOINT.userInfo);
+
+    if (images?.length) {
+      defaultImage.classList.add("hidden");
+    } else {
+      defaultImage.classList.remove("hidden");
+    }
+    profileButton.addEventListener("click", onProfileClick);
+
+    displayNameElement.textContent = displayName;
+    resolve({ displayName });
+  });
 };
 
 const onPlaylistItemClicked = (event, id) => {
@@ -68,6 +74,8 @@ const loadPlaylists = () => {
 };
 
 const fillContentForDashboard = () => {
+  const coverContext = document.querySelector("#cover-content");
+  coverContext.innerHTML = `<h1 class="text-6xl">${displayName}</h1>`;
   const pageContent = document.querySelector("#page-content");
   const playlistMap = new Map([
     ["featured", "featured-playlist-items"],
@@ -296,7 +304,27 @@ const loadSection = (section) => {
   document.querySelector(".content").addEventListener("scroll", onContentScroll);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+const onUserPlaylistClick = (id) => {
+  const section = { type: SECTIONTYPE.PLAYLIST, playlist: id };
+  history.pushState(section, "", `/dashboard/playlist/${id}`);
+  loadSection(section);
+};
+
+const loadUserPlaylists = async () => {
+  const playlist = await fetchRequest(ENDPOINT.userPlaylist);
+  console.log(playlist);
+  const userPlaylistSection = document.querySelector("#user-playlists >ul");
+  userPlaylistSection.innerHTML = "";
+  for (let { name, id } of playlist.items) {
+    const li = document.createElement("li");
+    li.textContent = name;
+    li.className = "cursor-pointer hover:text-primary";
+    li.addEventListener("click", () => onUserPlaylistClick(id));
+    userPlaylistSection.appendChild(li);
+  }
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
   const volume = document.querySelector("#volume");
   const playButton = document.querySelector("#play");
   const SongDurationCompleted = document.querySelector("#song-duration-completed");
@@ -306,15 +334,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const next = document.querySelector("#next");
   const prev = document.querySelector("#prev");
   let progressInterval;
-  loadUserProfile();
-  // const section = {type: SECTIONTYPE.DASHBOARD};
+  ({ displayName } = await loadUserProfile());
+  loadUserPlaylists();
+  const section = { type: SECTIONTYPE.DASHBOARD };
   // playlist / 37i9dQZF1DX7cLxqtNO3z1;
-  const section = {
-    type: SECTIONTYPE.PLAYLIST,
-    playlist: "37i9dQZF1DX7cLxqtNO3z1",
-  };
-  // history.pushState(section,"","");
-  history.pushState(section, "", `/dashboard/playlist/${section.playlist}`);
+  // const section = {
+  //   type: SECTIONTYPE.PLAYLIST,
+  //   playlist: "37i9dQZF1DX7cLxqtNO3z1",
+  // };
+  history.pushState(section, "", "");
+  // history.pushState(section, "", `/dashboard/playlist/${section.playlist}`);
   loadSection(section);
   document.addEventListener("click", () => {
     const profileMenu = document.querySelector("#profile-menu");
