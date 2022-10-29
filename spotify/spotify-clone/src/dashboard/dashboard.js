@@ -177,15 +177,15 @@ const playTrack = (event, { image, artistNames, name, previewUrl, id }) => {
     const artists = document.querySelector("#now-playing-song");
     const songTitle = document.querySelector("#now-playing-artists");
     const audioControl = document.querySelector("#audio-control");
+    const songInfo = document.querySelector("song-info");
 
     audioControl.setAttribute("data-track-id", id);
     nowPlayingSongImage.src = image.url;
     songTitle.textContent = name;
     artists.textContent = artistNames;
-
     audio.src = previewUrl;
-
     audio.play();
+    songInfo.classList.remove("invisible");
   }
 };
 
@@ -240,7 +240,7 @@ const fillContentForPlaylist = async (playlistId) => {
   `;
   const pageContent = document.querySelector("#page-content");
   pageContent.innerHTML = `
-    <header id="playlist-header" class="mx-8 py-4 border-secondary border-b-[0.5px] z-10">
+    <header id="playlist-header" class="mx-8 border-secondary border-b-[0.5px] z-10">
         <nav class="py-2">
             <ul class="grid grid-col-[50px_1fr_1fr_50px] gap-4 text-secondary ">
                 <li>#</li>
@@ -261,18 +261,17 @@ const fillContentForPlaylist = async (playlistId) => {
 const onContentScroll = (event) => {
   const { scrollTop } = event.target;
   const header = document.querySelector(".header");
+  const coverElement = document.querySelector("#cover-content");
+  const totalHeight = coverElement.offsetHeight;
+  const coverOpacity = 100 - (scrollTop >= totalHeight ? 100 : (scrollTop / totalHeight) * 100);
+  const headerOpacity = scrollTop >= header.offsetHeight ? 100 : (scrollTop / header.offsetHeight) * 100;
+  coverElement.style.opacity = `${headerOpacity}%`;
+  header.style.background = `rgba( 0 0 0 /${headerOpacity})`;
 
-  if (scrollTop >= header.offsetHeight) {
-    header.classList.add("sticky", "top-0", "bg-black-secondary");
-    header.classList.remove("bg-transparent");
-  } else {
-    header.classList.remove("sticky", "top-0", "bg-black");
-    header.classList.add("bg-transparent");
-  }
   if (history.state.type === SECTIONTYPE.PLAYLIST) {
-    const coverElement = document.querySelector("#cover-content");
     const playlistHeader = document.querySelector("#playlist-header");
-    if (scrollTop >= coverElement.offsetHeight - header.offsetHeight) {
+
+    if (coverOpacity <= 35) {
       playlistHeader.classList.add("sticky", "bg-black-secondary", "px-8");
       playlistHeader.classList.remove("mx-8");
       playlistHeader.style.top = `${header.offsetHeight}px`;
