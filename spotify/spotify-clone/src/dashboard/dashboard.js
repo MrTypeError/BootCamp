@@ -1,5 +1,13 @@
 import { fetchRequest } from "../api";
-import { ENDPOINT, logout, SECTION, SECTIONTYPE } from "../comman";
+import {
+  ENDPOINT,
+  getItemFromLocalStorage,
+  LOADED_TRACKS,
+  logout,
+  SECTION,
+  SECTIONTYPE,
+  setItemInLocalStorage,
+} from "../comman";
 
 const audio = new Audio();
 
@@ -132,8 +140,35 @@ const togglePlay = () => {
     audio.pause();
   }
 };
+const findCurrentTrack = () => {
+  const audioControl = document.querySelector("#audio-control");
+  const trackId = audioControl.getAttribute("data-track-id");
+  if (trackId) {
+    const loadedTracks = getItemFromLocalStorage(LOADED_TRACKS);
+    const currentTrackIndex = loadedTracks?.findIndex((trk) => trk.id === trackId);
+    return { currentTrackIndex, tracks: loadedTracks };
+  }
+  return null;
+};
+
+const playNextTrack = () => {
+  const { currentTrackIndex = -1, tracks = null } = findCurrentTrack() ?? {};
+  if (currentTrackIndex > -1 && currentTrackIndex < tracks?.length - 1) {
+    playTrack(null, tracks[currentTrackIndex + 1]);
+  }
+};
+
+const playPrevTrack = () => {
+  const { currentTrackIndex = -1, tracks = null } = findCurrentTrack() ?? {};
+  if (currentTrackIndex > 0) {
+    playTrack(null, tracks[currentTrackIndex - 1]);
+  }
+};
 
 const playTrack = (event, { image, artistNames, name, previewUrl, id }) => {
+  if (event?.stopPropagation) {
+    event.stopPropagation();
+  }
   if (audio.src === previewUrl) {
     togglePlay();
   } else {
@@ -157,7 +192,8 @@ const playTrack = (event, { image, artistNames, name, previewUrl, id }) => {
 const loadPlaylistTracks = ({ tracks }) => {
   const trackSections = document.querySelector("#tracks");
   let trackNo = 1;
-  for (let trackItem of tracks.items) {
+  const loadedTracks = [];
+  for (let trackItem of tracks.items.filter((item) => item.track.preview_url)) {
     let { id, artists, name, album, duration_ms: duration, preview_url: previewUrl } = trackItem.track;
     let track = document.createElement("section");
     track.id = id;
@@ -170,7 +206,7 @@ const loadPlaylistTracks = ({ tracks }) => {
                 <section class="grid grid-cols-[auto_1fr] place-items-center gap-2">
                     <img class="h-10 w-10" src="${image.url}" alt="${name}">
                     <article class="flex flex-col gap-2 justify-center">
-                        <h2 class="text-primary text-base line-clamp-1 ">${name}</h2>
+                        <h2 class="song-title text-primary text-base line-clamp-1 ">${name}</h2>
                         <p class="text-xs line-clamp-1 ">${artistNames}</p>
                     </article>
                 </section>
@@ -185,7 +221,9 @@ const loadPlaylistTracks = ({ tracks }) => {
     playButton.addEventListener("click", (event) => playTrack(event, { image, artistNames, name, previewUrl, id }));
     track.querySelector("p").appendChild(playButton);
     trackSections.appendChild(track);
+    loadedTracks.push({ id, artistNames, name, album, duration, previewUrl, image });
   }
+  setItemInLocalStorage(LOADED_TRACKS, loadedTracks);
 };
 
 const fillContentForPlaylist = async (playlistId) => {
@@ -266,6 +304,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const songProgress = document.querySelector("#progress");
   const timeline = document.querySelector("#timeline");
   const audioControl = document.querySelector("#audio-control");
+  const next = document.querySelector("#next");
+  const prev = document.querySelector("#prev");
   let progressInterval;
   loadUserProfile();
   // const section = {type: SECTIONTYPE.DASHBOARD};
@@ -286,6 +326,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   audio.addEventListener("play", () => {
     const selectedTrackId = audioControl.getAttribute("data-track-id");
+    const tracks = document.querySelector("#tracks");
+    const playingTrack = tracks?.querySelector("section.playing");
+    const selectedTrack = tracks?.querySelector(`[id="${selectedTrackId}"]`);
+    if (playingTrack?.id !== selectedTrack?.id) {
+      playingTrack?.classList.remove("playing");
+    }
+    selectedTrack?.classList.add("playing");
     progressInterval = setInterval(() => {
       if (audio.paused) {
         return;
@@ -321,6 +368,9 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     false
   );
+
+  next.addEventListener("click", playNextTrack);
+  prev.addEventListener("click", playPrevTrack);
 
   window.addEventListener("popstate", (event) => {
     loadSection(event.state);
