@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Intro</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.7.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.18.0/babel.js"></script>
+    <script type="text/babel">
+      //   const root = document.getElementById("root");
+      //   const element = document.createElement("span");
+      //   element.className = "container";
+      //   element.textContent = "Hello World";
+      //   document.body.appendChild(element);
+
+      //   React Way To do it :)
+
+      // way-1
+
+      //   const root = document.getElementById("root");
+      //   const element = React.createElement("div", {
+      //     className: "container",
+      //     children: "HELLO SUDIP",
+      //   });
+      //   ReactDOM.render(element, root);
+
+      // way-2
+      //   const root = document.getElementById("root");
+      //     const element = React.createElement(
+      //       "span",
+      //       {
+      //         className: "container",
+      //       },
+      //       [
+      //         "Hello Students",
+      //         React.createElement("span", {
+      //           children: "What's up!",
+      //         }),
+      //       ]
+      //     );
+
+      // Using JSX :-
+      // const root = document.getElementById("root");
+      // const greetings = Hellow World;
+      // //interpolation
+      // // const element = (
+      // // <div className="container">
+      // //   {greetings}
+      // //   <span> What's Up! </span>
+      // // </div>
+
+      // //Fragment
+
+      // // <React.Fragment>
+      // //   <span>{greetings}</span>
+      // //   <span>Hello</span>
+      // // </React.Fragment>
+
+      // // OR
+      // // <>
+      // //   <span>{greetings}</span>
+      // //   <span>Hello</span>
+      // // </>
+
+      // const onClickOfSpan = () => {
+      //   alert("Clicked Me");
+      // };
+      // const element = (
+      //   <>
+      //     <span onClick={onClickOfSpan}>{greetings}</span>
+      //   </>
+      // );
+
+      // React Components
+
+      //It follows the naming conventation Div,Component,Greetings...etc
+
+      // const handleClick = () =>{
+      //   alert("Clicked")
+      // }
+      // const root = document.getElementById("root");
+      // const message = "Hello";
+      // const Greetings = (props) => <span onClick={props.onClick}>{props.message}</span>;
+
+      // const element = (
+      //   <>
+      //     <Greetings message="HELLO" onClick={handleClick} />
+      //     <Greetings message="Viewer" />
+      //     <Greetings message="What's Up" />
+      //   </>
+      // );
+      // ReactDOM.render(element, root);
+
+      //We can destructure the same thing and then do the work
+
+      // const handleClick = () => {
+      //   alert("Clicked");
+      // };
+      // const root = document.getElementById("root");
+      // const message = "Hello";
+      // const Greetings = ({ onClick, message }) => <span onClick={onClick}>{message}</span>;
+
+      // const element = (
+      //   <>
+      //     <Greetings message="HELLO" onClick={handleClick} />
+      //     <Greetings message="Viewer" />
+      //     <Greetings message="What's Up" />
+      //   </>
+      // );
+      // ReactDOM.render(element, root);
+
+      // We can use spread Operator
+      //It automatically assign the propety
+      const handleClick = () => {
+        alert("Clicked");
+      };
+      const root = document.getElementById("root");
+      const message = "Hello";
+      const Greetings = (props) => <p {...props}>{props.message}</p>;
+
+      const element = (
+        <>
+          <Greetings message="HELLO" onClick={handleClick} />
+          <Greetings message="Viewer" />
+          <Greetings message="What's Up" />
+        </>
+      );
+
+      ReactDOM.render(element, root);
+    </script>
+  </body>
+</html>
