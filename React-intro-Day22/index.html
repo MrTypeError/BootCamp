@@ -45,14 +45,16 @@
       //     );
 
       // Using JSX :-
-      // const root = document.getElementById("root");
-      // const greetings = Hellow World;
-      // //interpolation
-      // // const element = (
-      // // <div className="container">
-      // //   {greetings}
-      // //   <span> What's Up! </span>
-      // // </div>
+      const root = document.getElementById("root");
+      const greetings = "Hellow World";
+      // interpolation
+      const element = (
+        <div className="container">
+          {greetings}
+          <span> What's Up! </span>
+        </div>
+      );
+      ReactDOM.render(element, root);
 
       // //Fragment
 
@@ -116,22 +118,22 @@
 
       // We can use spread Operator
       //It automatically assign the propety
-      const handleClick = () => {
-        alert("Clicked");
-      };
-      const root = document.getElementById("root");
-      const message = "Hello";
-      const Greetings = (props) => <p {...props}>{props.message}</p>;
+      // const handleClick = () => {
+      //   alert("Clicked");
+      // };
+      // const root = document.getElementById("root");
+      // const message = "Hello";
+      // const Greetings = (props) => <p {...props}>{props.message}</p>;
 
-      const element = (
-        <>
-          <Greetings message="HELLO" onClick={handleClick} />
-          <Greetings message="Viewer" />
-          <Greetings message="What's Up" />
-        </>
-      );
+      // const element = (
+      //   <>
+      //     <Greetings message="HELLO" onClick={handleClick} />
+      //     <Greetings message="Viewer" />
+      //     <Greetings message="What's Up" />
+      //   </>
+      // );
 
-      ReactDOM.render(element, root);
+      // ReactDOM.render(element, root);
     </script>
   </body>
 </html>
