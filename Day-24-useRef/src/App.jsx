@@ -16,24 +16,28 @@ function App() {
       lastname: "Dutta",
       age: "20",
       post: "Manager",
+      employeeId: "1",
     },
     {
       firstname: "Sandip",
       lastname: "Dutta",
       age: "22",
       post: "CEO",
+      employeeId: "2",
     },
     {
       firstname: "Sagar",
       lastname: "Pal",
       age: "25",
       post: "Developer",
+      employeeId: "3",
     },
     {
       firstname: "Sanu",
       lastname: "Das",
       age: "28",
       post: "Developer",
+      employeeId: "4",
     },
   ];
 
@@ -49,10 +53,20 @@ function App() {
       {/* <Multiplier /> */}
       <h1> Employee Details </h1>
       <header>
+        {/* using map concept we can use ... that is a spread operator */}
+
+        {/* Map */}
+
         {employeeInfo.map((employee) => {
           const { firstname, lastname, age, post } = employee;
-          return <Employee firstname={firstname} lastname={lastname} age={age} post={post} />;
+          return <Employee key={employeeId} firstname={firstname} lastname={lastname} age={age} post={post} />;
         })}
+
+        {/* (...) same thing using spread operator */}
+
+        {/* {employeeInfo.map((employee) => {
+          return <Employee {...employee} />;
+        })} */}
 
         {/* <Employee firstname="Sudip" lastname="Dutta" age="18" post="Manager"/>
     <Employee firstname="Sandip" lastname="Dutta" age="19" post="CEO"/>
