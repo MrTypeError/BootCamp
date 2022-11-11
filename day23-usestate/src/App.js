@@ -4,6 +4,7 @@ import { useState } from "react";
 // import List from "./list";
 // import UseEffectExample from "./userffect-example";
 import Products from "./products";
+import TodoList from "./TodoList";
 function App() {
   let localVariable = "abc";
   const [text, setText] = useState("devsnest");
@@ -26,7 +27,8 @@ function App() {
     // <Counter />
     // <List />
     // <UseEffectExample />
-    <Products />
+    // <Products />
+    <TodoList />
   );
 }
 
