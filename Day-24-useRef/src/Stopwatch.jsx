@@ -23,12 +23,13 @@ export default function Stopwatch() {
     }
 
     function stopStopWatch(){
-        clearInterval(intervalRef.current);
+        clearInterval(intervalRef.current); 
     }
     secondsElapsed = (now - startTime.current)/1000;
 
   return (
-    <>
+    // react Fragment 
+    <> 
     <section>
         <h1>{secondsElapsed.toFixed(2)}</h1>
         <button onClick={startStopWatch}>Start</button>
