@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { useState } from "react";
 import "./App.css";
+import CounterReducer from "./CounterReducer";
 
 class ErrorBoundary extends Component {
   state = { error: null };
@@ -41,10 +42,11 @@ function AnotherComponent() {
 function App() {
   return (
     <div className="App">
-      <ErrorBoundary>
+      {/* <ErrorBoundary>
         <Breaker />
       </ErrorBoundary>
-      <AnotherComponent />
+      <AnotherComponent /> */}
+      <CounterReducer />
     </div>
   );
 }
